@@ -111,7 +111,7 @@ struct ConfettiView: View {
     let colors: [Color] = [AppPalette.clay, AppPalette.cactus, .yellow, .white, .orange]
 
     var body: some View {
-        TimelineView(.animation) { timeline in
+        TimelineView(.animation) { (timeline: TimelineViewDefaultContext) in
             Canvas { (context: inout GraphicsContext, size: CGSize) in
                 let time = timeline.date.timeIntervalSinceReferenceDate
                 for index in 0..<48 {
