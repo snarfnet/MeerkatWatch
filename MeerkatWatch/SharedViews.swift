@@ -118,7 +118,7 @@ struct ConfettiView: View {
                     let x = (Double(index * 53).truncatingRemainder(dividingBy: size.width + 80)) - 40
                     let speed = Double(70 + (index % 7) * 24)
                     let y = (time * speed + Double(index * 31)).truncatingRemainder(dividingBy: size.height + 120) - 60
-                    let rect = CGRect(x: x, y: y, width: 8 + index % 5, height: 16 + index % 9)
+                    let rect = CGRect(x: x, y: y, width: Double(8 + index % 5), height: Double(16 + index % 9))
                     context.fill(Path(roundedRect: rect, cornerRadius: 2), with: .color(colors[index % colors.count]))
                 }
             }
