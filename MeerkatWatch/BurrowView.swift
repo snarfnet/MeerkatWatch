@@ -1,0 +1,101 @@
+import SwiftUI
+
+struct BurrowView: View {
+    @EnvironmentObject private var dataManager: DataManager
+    @State private var didLevelUp = false
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                DesertBackground()
+
+                ScrollView {
+                    VStack(spacing: 18) {
+                        burrowIllustration
+
+                        VStack(spacing: 12) {
+                            StatRow(title: "現在の巣穴", value: "Lv\(dataManager.burrowLevel.rawValue) \(dataManager.burrowLevel.title)", icon: dataManager.burrowLevel.icon)
+                            StatRow(title: "所持ポイント", value: "\(dataManager.points)pt", icon: "sparkles")
+                            StatRow(title: "成功回数", value: "\(dataManager.successCount)回", icon: "checkmark.seal.fill")
+                            StatRow(title: "合計集中時間", value: "\(dataManager.totalFocusMinutes)分", icon: "clock.fill")
+                        }
+                        .padding(16)
+                        .background(.white.opacity(0.78), in: RoundedRectangle(cornerRadius: 8))
+
+                        nextLevelPanel
+
+                        Button {
+                            withAnimation(.spring(response: 0.35, dampingFraction: 0.55)) {
+                                didLevelUp = dataManager.upgradeBurrow()
+                            }
+                        } label: {
+                            Label(dataManager.burrowLevel.next == nil ? "最大レベル" : "巣穴を強化", systemImage: "hammer.fill")
+                                .primaryButtonStyle()
+                        }
+                        .disabled(!dataManager.canUpgradeBurrow())
+                        .opacity(dataManager.canUpgradeBurrow() ? 1 : 0.55)
+                    }
+                    .padding(18)
+                }
+            }
+            .navigationTitle("巣穴")
+            .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+
+    private var burrowIllustration: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 8)
+                .fill(AppPalette.cream.opacity(0.78))
+                .frame(height: 260)
+
+            Circle()
+                .fill(AppPalette.cocoa.opacity(0.86))
+                .frame(width: 150, height: 92)
+                .offset(y: 50)
+
+            Image(systemName: dataManager.burrowLevel.icon)
+                .font(.system(size: 78, weight: .black))
+                .foregroundStyle(AppPalette.clay)
+                .offset(y: -50)
+
+            Text(dataManager.burrowLevel.title)
+                .font(.title2.weight(.black))
+                .foregroundStyle(AppPalette.cocoa)
+                .offset(y: 106)
+
+            if didLevelUp {
+                Circle()
+                    .stroke(.yellow.opacity(0.85), lineWidth: 10)
+                    .frame(width: 230, height: 230)
+                    .blur(radius: 2)
+                    .transition(.scale.combined(with: .opacity))
+            }
+        }
+    }
+
+    private var nextLevelPanel: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if let next = dataManager.burrowLevel.next {
+                Text("次のレベル")
+                    .font(.caption.weight(.black))
+                    .foregroundStyle(AppPalette.clay)
+                Text("Lv\(next.rawValue) \(next.title)")
+                    .font(.title3.weight(.black))
+                    .foregroundStyle(AppPalette.cocoa)
+                ProgressView(value: min(Double(dataManager.points), Double(dataManager.burrowLevel.requiredPoints)), total: Double(dataManager.burrowLevel.requiredPoints))
+                    .tint(AppPalette.cactus)
+                Text("あと \(max(0, dataManager.burrowLevel.requiredPoints - dataManager.points))pt")
+                    .font(.subheadline.weight(.bold))
+                    .foregroundStyle(AppPalette.cocoa.opacity(0.72))
+            } else {
+                Text("豪華な砂漠基地が完成したぞ！")
+                    .font(.title3.weight(.black))
+                    .foregroundStyle(AppPalette.cocoa)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(16)
+        .background(.white.opacity(0.78), in: RoundedRectangle(cornerRadius: 8))
+    }
+}
