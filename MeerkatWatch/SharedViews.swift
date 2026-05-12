@@ -112,7 +112,7 @@ struct ConfettiView: View {
 
     var body: some View {
         TimelineView(.animation) { timeline in
-            Canvas { (context: GraphicsContext, size: CGSize) in
+            Canvas { (context: inout GraphicsContext, size: CGSize) in
                 let time = timeline.date.timeIntervalSinceReferenceDate
                 for index in 0..<48 {
                     let x = (Double(index * 53).truncatingRemainder(dividingBy: size.width + 80)) - 40
