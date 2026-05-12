@@ -4,7 +4,7 @@ import jwt, time, requests, sys, os
 KEY_ID  = 'WDXGY9WX55'
 ISSUER  = '2be0734f-943a-4d61-9dc9-5d9045c46fec'
 P8_PATH = os.path.expanduser('~/.appstoreconnect/private_keys/AuthKey_WDXGY9WX55.p8')
-APP_ID  = 'FILL_APP_ID'   # ASCアプリ作成後に書き換える
+APP_ID  = '6768575235'
 
 p8 = open(P8_PATH).read()
 
