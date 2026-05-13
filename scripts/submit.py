@@ -56,17 +56,17 @@ build_num = sys.argv[1] if len(sys.argv) > 1 else None
 if build_num:
     print(f'Waiting for build {build_num} to be VALID...')
     build_id = None
-    for i in range(30):
+    for i in range(120):
         r2 = api('GET', f'/builds?filter[app]={APP_ID}&filter[version]={build_num}&filter[processingState]=VALID')
         builds = r2.json().get('data', [])
         if builds:
             build_id = builds[0]['id']
             print(f'Build ready: {build_id}')
             break
-        print(f'  attempt {i+1}/30, waiting 30s...')
+        print(f'  attempt {i+1}/120, waiting 30s...')
         time.sleep(30)
     else:
-        print('Build not ready after 15 min'); sys.exit(1)
+        print('Build not ready after 60 min'); sys.exit(1)
 
     api('PATCH', f'/appStoreVersions/{VERSION_ID}', {
         'data': {'type': 'appStoreVersions', 'id': VERSION_ID,

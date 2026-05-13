@@ -88,12 +88,13 @@ jobs:
       run: |
         IPA_PATH=$(ls build/export/*.ipa | head -1)
         echo "Uploading: $IPA_PATH"
+        API_PRIVATE_KEYS_DIR="$HOME/.appstoreconnect/private_keys" \
         xcrun altool --upload-app \
-          -f "$IPA_PATH" \
-          -t ios \
+          --file "$IPA_PATH" \
+          --type ios \
           --apiKey WDXGY9WX55 \
           --apiIssuer 2be0734f-943a-4d61-9dc9-5d9045c46fec \
-          --verbose 2>&1 || true
+          --output-format xml
 
     - name: Install PyJWT
       run: pip3 install --break-system-packages PyJWT requests
