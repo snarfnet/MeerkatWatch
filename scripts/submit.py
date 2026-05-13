@@ -78,27 +78,29 @@ if build_num:
                  'attributes': {'usesNonExemptEncryption': False}}
     })
 
-rs = api('POST', '/reviewSubmissions', {
-    'data': {'type': 'reviewSubmissions',
-             'attributes': {'platform': 'IOS'},
-             'relationships': {'app': {'data': {'type': 'apps', 'id': APP_ID}}}}
-})
-rs_id = rs.json().get('data', {}).get('id')
+existing = api('GET', f'/apps/{APP_ID}/reviewSubmissions?filter[platform]=IOS&filter[state]=UNRESOLVED_ISSUES,WAITING_FOR_REVIEW&limit=10')
+subs = existing.json().get('data', [])
+rs_id = subs[0]['id'] if subs else None
+
 if not rs_id:
-    existing = api('GET', f'/apps/{APP_ID}/reviewSubmissions?filter[platform]=IOS&filter[state]=WAITING_FOR_REVIEW,UNRESOLVED_ISSUES')
-    subs = existing.json().get('data', [])
-    if subs:
-        rs_id = subs[0]['id']
-    else:
+    rs = api('POST', '/reviewSubmissions', {
+        'data': {'type': 'reviewSubmissions',
+                 'attributes': {'platform': 'IOS'},
+                 'relationships': {'app': {'data': {'type': 'apps', 'id': APP_ID}}}}
+    })
+    rs_id = rs.json().get('data', {}).get('id')
+    if not rs_id:
         print('Could not create/find reviewSubmission'); sys.exit(1)
 
-api('POST', '/reviewSubmissionItems', {
-    'data': {'type': 'reviewSubmissionItems',
-             'relationships': {
-                 'reviewSubmission': {'data': {'type': 'reviewSubmissions', 'id': rs_id}},
-                 'appStoreVersion':  {'data': {'type': 'appStoreVersions',  'id': VERSION_ID}}
-             }}
-})
+    item = api('POST', '/reviewSubmissionItems', {
+        'data': {'type': 'reviewSubmissionItems',
+                 'relationships': {
+                     'reviewSubmission': {'data': {'type': 'reviewSubmissions', 'id': rs_id}},
+                     'appStoreVersion':  {'data': {'type': 'appStoreVersions',  'id': VERSION_ID}}
+                 }}
+    })
+    if item.status_code >= 400:
+        sys.exit(1)
 
 submit = api('PATCH', f'/reviewSubmissions/{rs_id}', {
     'data': {'type': 'reviewSubmissions', 'id': rs_id,
