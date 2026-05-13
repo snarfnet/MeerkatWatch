@@ -70,6 +70,7 @@ if build_num:
 
     api('PATCH', f'/appStoreVersions/{VERSION_ID}', {
         'data': {'type': 'appStoreVersions', 'id': VERSION_ID,
+                 'attributes': {'usesIdfa': True},
                  'relationships': {'build': {'data': {'type': 'builds', 'id': build_id}}}}
     })
     api('PATCH', f'/builds/{build_id}', {
@@ -105,3 +106,5 @@ submit = api('PATCH', f'/reviewSubmissions/{rs_id}', {
 })
 if submit.status_code == 200:
     print('=== SUBMITTED FOR REVIEW ===')
+else:
+    sys.exit(1)
