@@ -36,6 +36,22 @@ print(f'Version: {VERSION_ID}  state={state}')
 if state in ('WAITING_FOR_REVIEW', 'IN_REVIEW', 'READY_FOR_SALE'):
     print('Already submitted or on sale'); sys.exit(0)
 
+review_notes = (
+    'Guideline 5.1.2(i)対応: 初回起動時にApp Tracking Transparencyの許可ダイアログを表示します。'
+    '場所: アプリ起動直後、広告SDKを開始する前です。'
+    'ユーザーが許可しない場合も、集中タイマー、巣穴、仲間機能はそのまま利用できます。'
+)
+
+details = api('GET', f'/appStoreVersions/{VERSION_ID}/appStoreReviewDetail')
+detail_id = details.json().get('data', {}).get('id') if details.status_code == 200 else None
+if detail_id:
+    api('PATCH', f'/appStoreReviewDetails/{detail_id}', {
+        'data': {'type': 'appStoreReviewDetails', 'id': detail_id,
+                 'attributes': {'notes': review_notes}}
+    })
+else:
+    print('Review detail not found; please add review notes in App Store Connect if required.')
+
 build_num = sys.argv[1] if len(sys.argv) > 1 else None
 if build_num:
     print(f'Waiting for build {build_num} to be VALID...')

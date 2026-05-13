@@ -41,9 +41,13 @@ private struct FriendRow: View {
                     RoundedRectangle(cornerRadius: 8)
                         .fill(isUnlocked ? AppPalette.cream : Color.black.opacity(0.28))
                         .frame(width: 64, height: 64)
-                    Text(isUnlocked ? friend.symbol : "？")
-                        .font(.system(size: 34, weight: .black))
-                        .foregroundStyle(.white)
+                    if isUnlocked {
+                        FriendImageView(friend: friend, size: 58)
+                    } else {
+                        Text("？")
+                            .font(.system(size: 34, weight: .black))
+                            .foregroundStyle(.white)
+                    }
                 }
 
                 VStack(alignment: .leading, spacing: 6) {

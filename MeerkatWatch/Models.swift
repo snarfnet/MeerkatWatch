@@ -63,13 +63,14 @@ struct MeerkatFriend: Identifiable, Codable, Hashable {
     let description: String
     let unlockDay: Int
     let symbol: String
+    let imageName: String
 
     static let all: [MeerkatFriend] = [
-        .init(id: "normal", name: "通常ミーア", description: "最初に来る真面目な見張り係。圧は強め。", unlockDay: 1, symbol: "🦫"),
-        .init(id: "child", name: "子どもミーア", description: "小さいけど声は大きい。サボりを見逃さない。", unlockDay: 3, symbol: "🌱"),
-        .init(id: "captain", name: "隊長ミーア", description: "砂漠の集中ルールに厳しい隊長。", unlockDay: 7, symbol: "🪖"),
-        .init(id: "sleepy", name: "眠そうなミーア", description: "眠そうでも見張り精度は高い。", unlockDay: 14, symbol: "💤"),
-        .init(id: "white", name: "伝説の白ミーア", description: "30日続いた者だけが会える白い見張り番。", unlockDay: 30, symbol: "✨")
+        .init(id: "normal", name: "通常ミーア", description: "最初に来る真面目な見張り係。圧は強め。", unlockDay: 1, symbol: "🦫", imageName: "FriendNormal"),
+        .init(id: "child", name: "子どもミーア", description: "小さいけど声は大きい。サボりを見逃さない。", unlockDay: 3, symbol: "🌱", imageName: "FriendChild"),
+        .init(id: "captain", name: "隊長ミーア", description: "砂漠の集中ルールに厳しい隊長。", unlockDay: 7, symbol: "🪖", imageName: "FriendCaptain"),
+        .init(id: "sleepy", name: "眠そうなミーア", description: "眠そうでも見張り精度は高い。", unlockDay: 14, symbol: "💤", imageName: "FriendSleepy"),
+        .init(id: "white", name: "伝説の白ミーア", description: "30日続いた者だけが会える白い見張り番。", unlockDay: 30, symbol: "✨", imageName: "FriendWhite")
     ]
 }
 

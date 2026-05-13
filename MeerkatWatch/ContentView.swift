@@ -1,10 +1,14 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject private var adPrivacy: AdPrivacyManager
+
     var body: some View {
         VStack(spacing: 0) {
-            BannerAdView(adUnitID: AdUnitID.top)
-                .frame(height: 50)
+            if adPrivacy.isAdSDKReady {
+                BannerAdView(adUnitID: AdUnitID.top)
+                    .frame(height: 50)
+            }
 
             TabView {
                 HomeView()
@@ -24,8 +28,10 @@ struct ContentView: View {
             }
             .tint(AppPalette.clay)
 
-            BannerAdView(adUnitID: AdUnitID.bottom)
-                .frame(height: 50)
+            if adPrivacy.isAdSDKReady {
+                BannerAdView(adUnitID: AdUnitID.bottom)
+                    .frame(height: 50)
+            }
         }
     }
 }
@@ -119,8 +125,7 @@ private struct NewFriendView: View {
                 Text("新しい仲間が来た！")
                     .font(.system(size: 30, weight: .black, design: .rounded))
                     .foregroundStyle(AppPalette.cocoa)
-                Text(friend.symbol)
-                    .font(.system(size: 72))
+                FriendImageView(friend: friend, size: 170)
                 Text(friend.name)
                     .font(.title.bold())
                 Text(friend.description)
@@ -136,4 +141,5 @@ private struct NewFriendView: View {
 #Preview {
     ContentView()
         .environmentObject(DataManager(defaults: .standard))
+        .environmentObject(AdPrivacyManager())
 }

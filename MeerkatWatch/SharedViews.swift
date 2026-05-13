@@ -31,13 +31,14 @@ struct DesertBackground: View {
 }
 
 struct MascotView: View {
+    @EnvironmentObject private var dataManager: DataManager
     let mood: MascotMood
     @State private var lookLeft = false
     @State private var shake = false
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            Image("MascotMeerkat")
+            Image(dataManager.selectedFriend.imageName)
                 .resizable()
                 .scaledToFit()
                 .clipShape(RoundedRectangle(cornerRadius: 8))
@@ -81,6 +82,24 @@ struct MascotView: View {
         case .happy: .easeInOut(duration: 0.55).repeatForever(autoreverses: true)
         default: .default
         }
+    }
+}
+
+struct FriendImageView: View {
+    let friend: MeerkatFriend
+    let size: CGFloat
+
+    var body: some View {
+        Image(friend.imageName)
+            .resizable()
+            .scaledToFill()
+            .frame(width: size, height: size)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(.white.opacity(0.72), lineWidth: 1)
+            )
+            .shadow(color: AppPalette.cocoa.opacity(0.18), radius: 8, y: 4)
     }
 }
 
