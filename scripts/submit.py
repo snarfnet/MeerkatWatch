@@ -37,9 +37,11 @@ if state in ('WAITING_FOR_REVIEW', 'IN_REVIEW', 'READY_FOR_SALE'):
     print('Already submitted or on sale'); sys.exit(0)
 
 review_notes = (
-    'Guideline 5.1.2(i)対応: 初回起動時にApp Tracking Transparencyの許可ダイアログを表示します。'
-    '場所: アプリ起動直後、広告SDKを開始する前です。'
-    'ユーザーが許可しない場合も、集中タイマー、巣穴、仲間機能はそのまま利用できます。'
+    'Guideline 2.1 response: This build shows a launch privacy screen first, then displays the '
+    'App Tracking Transparency system permission request before Google Mobile Ads is started '
+    'and before any ad banner is loaded. After the user responds to the ATT dialog, the app '
+    'opens the main meerkat timer flow. If the user does not allow tracking, all app features '
+    'remain available.'
 )
 
 details = api('GET', f'/appStoreVersions/{VERSION_ID}/appStoreReviewDetail')
