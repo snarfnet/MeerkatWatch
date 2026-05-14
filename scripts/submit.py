@@ -24,6 +24,24 @@ def api(method, path, payload=None):
         print('  ERR:', r.text[:300])
     return r
 
+def cancel_blocking_submissions():
+    canceled = False
+    for state_filter in ('UNRESOLVED_ISSUES', 'READY_FOR_REVIEW', 'WAITING_FOR_REVIEW'):
+        r = api('GET', f'/apps/{APP_ID}/reviewSubmissions?filter[platform]=IOS&filter[state]={state_filter}&limit=20')
+        if r.status_code >= 400:
+            continue
+        for sub in r.json().get('data', []):
+            sid = sub['id']
+            state = sub.get('attributes', {}).get('state', state_filter)
+            cr = api('PATCH', f'/reviewSubmissions/{sid}', {
+                'data': {'type': 'reviewSubmissions', 'id': sid,
+                         'attributes': {'canceled': True}}
+            })
+            print(f'Cancel reviewSubmission {sid} state={state}: {cr.status_code}')
+            if cr.status_code in (200, 204, 409):
+                canceled = True
+    return canceled
+
 r = api('GET', f'/apps/{APP_ID}/appStoreVersions?filter[platform]=IOS&limit=1')
 versions = r.json().get('data', [])
 if not versions:
@@ -80,29 +98,43 @@ if build_num:
                  'attributes': {'usesNonExemptEncryption': False}}
     })
 
-existing = api('GET', f'/apps/{APP_ID}/reviewSubmissions?filter[platform]=IOS&filter[state]=UNRESOLVED_ISSUES,WAITING_FOR_REVIEW&limit=10')
-subs = existing.json().get('data', [])
-rs_id = subs[0]['id'] if subs else None
+if cancel_blocking_submissions():
+    print('Waiting for canceled review submissions to clear...')
+    time.sleep(30)
+    if build_num and build_id:
+        api('PATCH', f'/appStoreVersions/{VERSION_ID}', {
+            'data': {'type': 'appStoreVersions', 'id': VERSION_ID,
+                     'attributes': {'usesIdfa': True},
+                     'relationships': {'build': {'data': {'type': 'builds', 'id': build_id}}}}
+        })
 
-if not rs_id:
+rs_id = None
+for attempt in range(5):
     rs = api('POST', '/reviewSubmissions', {
         'data': {'type': 'reviewSubmissions',
                  'attributes': {'platform': 'IOS'},
                  'relationships': {'app': {'data': {'type': 'apps', 'id': APP_ID}}}}
     })
-    rs_id = rs.json().get('data', {}).get('id')
-    if not rs_id:
-        print('Could not create/find reviewSubmission'); sys.exit(1)
+    if rs.status_code == 201:
+        rs_id = rs.json().get('data', {}).get('id')
+        print(f'ReviewSubmission created: {rs_id}')
+        break
+    print(f'Create reviewSubmission attempt {attempt + 1}/5 failed: {rs.status_code} {rs.text[:300]}')
+    if attempt < 4:
+        time.sleep(15)
 
-    item = api('POST', '/reviewSubmissionItems', {
-        'data': {'type': 'reviewSubmissionItems',
-                 'relationships': {
-                     'reviewSubmission': {'data': {'type': 'reviewSubmissions', 'id': rs_id}},
-                     'appStoreVersion':  {'data': {'type': 'appStoreVersions',  'id': VERSION_ID}}
-                 }}
-    })
-    if item.status_code >= 400:
-        sys.exit(1)
+if not rs_id:
+    print('Could not create reviewSubmission'); sys.exit(1)
+
+item = api('POST', '/reviewSubmissionItems', {
+    'data': {'type': 'reviewSubmissionItems',
+             'relationships': {
+                 'reviewSubmission': {'data': {'type': 'reviewSubmissions', 'id': rs_id}},
+                 'appStoreVersion':  {'data': {'type': 'appStoreVersions',  'id': VERSION_ID}}
+             }}
+})
+if item.status_code >= 400:
+    sys.exit(1)
 
 submit = api('PATCH', f'/reviewSubmissions/{rs_id}', {
     'data': {'type': 'reviewSubmissions', 'id': rs_id,
