@@ -6,6 +6,19 @@ ISSUER  = '2be0734f-943a-4d61-9dc9-5d9045c46fec'
 P8_PATH = os.path.expanduser('~/.appstoreconnect/private_keys/AuthKey_WDXGY9WX55.p8')
 APP_ID  = '6768575235'
 APP_VERSION = os.environ.get('APP_VERSION', '1.1')
+LOCALIZATION = {
+    'ja': {
+        'description': (
+            'ミーアキャットの見張り隊は、スマホを触らず集中時間を守るための見張りタイマーです。'
+            '見張りを成功させるとポイントがたまり、巣穴を強化したり、仲間を増やしたりできます。'
+            '短い集中から長めの作業まで、ミーアキャットと一緒に見張り任務を続けましょう。'
+        ),
+        'keywords': '集中,タイマー,勉強,作業,習慣,ミーアキャット,スマホ,巣穴,仲間,見張り',
+        'promotionalText': 'ミーアキャットと一緒に、スマホを触らない集中時間を守ろう。',
+        'supportUrl': 'https://snarfnet.github.io/',
+        'whatsNew': 'ホームと見張りタイマーの表示を見やすくし、巣穴画面をリアルなビジュアルに更新しました。',
+    }
+}
 
 p8 = open(P8_PATH).read()
 
@@ -75,6 +88,36 @@ print(f'Version {APP_VERSION}: {VERSION_ID}  state={state}')
 
 if state in ('WAITING_FOR_REVIEW', 'IN_REVIEW', 'READY_FOR_SALE'):
     print('Already submitted or on sale'); sys.exit(0)
+
+def update_localizations(version_id):
+    existing = {}
+    r = api('GET', f'/appStoreVersions/{version_id}/appStoreVersionLocalizations?limit=200')
+    if r.status_code == 200:
+        for loc in r.json().get('data', []):
+            existing[loc.get('attributes', {}).get('locale')] = loc
+
+    for locale, attributes in LOCALIZATION.items():
+        loc = existing.get(locale)
+        if loc:
+            api('PATCH', f'/appStoreVersionLocalizations/{loc["id"]}', {
+                'data': {
+                    'type': 'appStoreVersionLocalizations',
+                    'id': loc['id'],
+                    'attributes': attributes
+                }
+            })
+        else:
+            api('POST', '/appStoreVersionLocalizations', {
+                'data': {
+                    'type': 'appStoreVersionLocalizations',
+                    'attributes': {'locale': locale, **attributes},
+                    'relationships': {
+                        'appStoreVersion': {'data': {'type': 'appStoreVersions', 'id': version_id}}
+                    }
+                }
+            })
+
+update_localizations(VERSION_ID)
 
 review_notes = (
     'Guideline 2.1 response: This build shows a launch privacy screen first, then displays the '
