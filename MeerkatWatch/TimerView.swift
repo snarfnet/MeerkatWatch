@@ -17,41 +17,58 @@ struct TimerView: View {
         ZStack {
             DesertBackground()
 
-            VStack(spacing: 18) {
-                Text(isRunning ? "周囲を見張り中" : "集中時間を選べ")
-                    .font(.system(size: 28, weight: .black, design: .rounded))
-                    .foregroundStyle(AppPalette.cocoa)
-
-                MascotView(mood: isRunning ? .watching : .normal)
-                    .frame(height: 230)
-
-                Text(timeText)
-                    .font(.system(size: 64, weight: .black, design: .rounded))
-                    .monospacedDigit()
-                    .foregroundStyle(AppPalette.cocoa)
-                    .padding(.vertical, 8)
-
-                if !isRunning {
-                    durationPicker
-                } else {
-                    Text("おい、今見張り中だぞ！画面から離れるな。")
-                        .font(.headline.weight(.bold))
-                        .foregroundStyle(AppPalette.clay)
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 16) {
+                    Text(isRunning ? "周囲を見張り中" : "集中時間を選べ")
+                        .font(.system(size: 26, weight: .black, design: .rounded))
+                        .foregroundStyle(AppPalette.cocoa)
                         .multilineTextAlignment(.center)
-                        .padding(.horizontal)
-                }
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.82)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 10)
+                        .frame(maxWidth: .infinity)
+                        .background(.white.opacity(0.66), in: RoundedRectangle(cornerRadius: 8))
 
-                Button {
-                    isRunning ? failAndShowResult() : start()
-                } label: {
-                    Label(isRunning ? "中断する" : "開始", systemImage: isRunning ? "xmark.octagon.fill" : "play.fill")
-                        .primaryButtonStyle()
-                }
-                .background(isRunning ? Color.red.opacity(0.2) : Color.clear)
+                    MascotView(mood: isRunning ? .watching : .normal)
+                        .frame(height: 205)
 
-                Spacer(minLength: 0)
+                    Text(timeText)
+                        .font(.system(size: 58, weight: .black, design: .rounded))
+                        .monospacedDigit()
+                        .foregroundStyle(AppPalette.cocoa)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.78)
+                        .padding(.vertical, 4)
+
+                    if !isRunning {
+                        durationPicker
+                    } else {
+                        Text("おい、今見張り中だぞ！\n画面から離れるな。")
+                            .font(.title3.weight(.black))
+                            .foregroundStyle(AppPalette.clay)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(nil)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 14)
+                            .frame(maxWidth: .infinity)
+                            .background(.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 8))
+                    }
+
+                    Button {
+                        isRunning ? failAndShowResult() : start()
+                    } label: {
+                        Label(isRunning ? "中断する" : "開始", systemImage: isRunning ? "xmark.octagon.fill" : "play.fill")
+                            .primaryButtonStyle()
+                    }
+                    .background(isRunning ? Color.red.opacity(0.2) : Color.clear)
+
+                    Spacer(minLength: 0)
+                }
+                .padding(20)
+                .padding(.bottom, 28)
             }
-            .padding(20)
         }
         .navigationTitle("見張りタイマー")
         .navigationBarTitleDisplayMode(.inline)
