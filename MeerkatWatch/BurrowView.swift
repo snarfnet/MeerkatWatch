@@ -45,24 +45,54 @@ struct BurrowView: View {
 
     private var burrowIllustration: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 8)
-                .fill(AppPalette.cream.opacity(0.78))
+            Image("BurrowRealistic")
+                .resizable()
+                .scaledToFill()
                 .frame(height: 260)
+                .clipped()
 
-            Circle()
-                .fill(AppPalette.cocoa.opacity(0.86))
-                .frame(width: 150, height: 92)
-                .offset(y: 50)
+            LinearGradient(
+                colors: [
+                    .black.opacity(0.18),
+                    .clear,
+                    .black.opacity(0.42)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
 
-            Image(systemName: dataManager.burrowLevel.icon)
-                .font(.system(size: 78, weight: .black))
-                .foregroundStyle(AppPalette.clay)
-                .offset(y: -50)
+            VStack {
+                HStack {
+                    Image(systemName: dataManager.burrowLevel.icon)
+                        .font(.system(size: 34, weight: .black))
+                        .foregroundStyle(.white)
+                        .frame(width: 66, height: 66)
+                        .background(AppPalette.cocoa.opacity(0.72), in: Circle())
+                        .overlay(
+                            Circle()
+                                .stroke(.white.opacity(0.72), lineWidth: 1)
+                        )
+                    Spacer()
+                }
 
-            Text(dataManager.burrowLevel.title)
-                .font(.title2.weight(.black))
-                .foregroundStyle(AppPalette.cocoa)
-                .offset(y: 106)
+                Spacer()
+
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("現在の巣穴")
+                            .font(.caption.weight(.black))
+                            .foregroundStyle(.white.opacity(0.84))
+
+                        Text(dataManager.burrowLevel.title)
+                            .font(.title2.weight(.black))
+                            .foregroundStyle(.white)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.75)
+                    }
+                    Spacer()
+                }
+            }
+            .padding(18)
 
             if didLevelUp {
                 Circle()
@@ -72,6 +102,13 @@ struct BurrowView: View {
                     .transition(.scale.combined(with: .opacity))
             }
         }
+        .frame(height: 260)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(.white.opacity(0.55), lineWidth: 1)
+        )
+        .shadow(color: AppPalette.cocoa.opacity(0.18), radius: 14, y: 8)
     }
 
     private var nextLevelPanel: some View {
