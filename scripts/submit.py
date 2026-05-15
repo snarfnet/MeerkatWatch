@@ -5,6 +5,7 @@ KEY_ID  = 'WDXGY9WX55'
 ISSUER  = '2be0734f-943a-4d61-9dc9-5d9045c46fec'
 P8_PATH = os.path.expanduser('~/.appstoreconnect/private_keys/AuthKey_WDXGY9WX55.p8')
 APP_ID  = '6768575235'
+APP_VERSION = os.environ.get('APP_VERSION', '1.1')
 
 p8 = open(P8_PATH).read()
 
@@ -42,14 +43,35 @@ def cancel_blocking_submissions():
                 canceled = True
     return canceled
 
-r = api('GET', f'/apps/{APP_ID}/appStoreVersions?filter[platform]=IOS&limit=1')
-versions = r.json().get('data', [])
-if not versions:
-    print('No version found'); sys.exit(0)
+def find_or_create_version():
+    r = api('GET', f'/apps/{APP_ID}/appStoreVersions?filter[platform]=IOS&filter[versionString]={APP_VERSION}&limit=1')
+    versions = r.json().get('data', [])
+    if versions:
+        return versions[0]
 
-VERSION_ID = versions[0]['id']
-state      = versions[0]['attributes']['appStoreState']
-print(f'Version: {VERSION_ID}  state={state}')
+    created = api('POST', '/appStoreVersions', {
+        'data': {
+            'type': 'appStoreVersions',
+            'attributes': {
+                'platform': 'IOS',
+                'versionString': APP_VERSION,
+                'releaseType': 'AFTER_APPROVAL'
+            },
+            'relationships': {
+                'app': {'data': {'type': 'apps', 'id': APP_ID}}
+            }
+        }
+    })
+    if created.status_code != 201:
+        print(f'Could not create App Store version {APP_VERSION}')
+        sys.exit(1)
+    return created.json()['data']
+
+version = find_or_create_version()
+
+VERSION_ID = version['id']
+state      = version['attributes']['appStoreState']
+print(f'Version {APP_VERSION}: {VERSION_ID}  state={state}')
 
 if state in ('WAITING_FOR_REVIEW', 'IN_REVIEW', 'READY_FOR_SALE'):
     print('Already submitted or on sale'); sys.exit(0)
