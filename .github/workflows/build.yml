@@ -26,9 +26,6 @@ jobs:
     - name: Install XcodeGen
       run: brew install xcodegen
 
-    - name: Install Python dependencies
-      run: pip3 install --break-system-packages PyJWT cryptography requests
-
     - name: Set build number
       run: |
         BUILD_NUM=$(( ${{ github.run_number }} + 0 ))
@@ -61,14 +58,6 @@ jobs:
         mkdir -p ~/.appstoreconnect/private_keys
         echo "$ASC_API_KEY_CONTENT" | base64 -D > ~/.appstoreconnect/private_keys/AuthKey_WDXGY9WX55.p8
 
-    - name: Prepare App Store provisioning profile
-      env:
-        ASC_KEY_ID: WDXGY9WX55
-        ASC_ISSUER_ID: 2be0734f-943a-4d61-9dc9-5d9045c46fec
-        APP_BUNDLE_ID: com.tokyonasu.meerkatwatch
-        PROFILE_NAME: "MeerkatWatch App Store"
-      run: python3 scripts/prepare_app_store_profile.py
-
     - name: Build Archive
       run: |
         xcodebuild archive \
@@ -76,10 +65,9 @@ jobs:
           -configuration Release \
           -destination "generic/platform=iOS" \
           -archivePath build/MeerkatWatch.xcarchive \
-          CODE_SIGN_STYLE=Manual \
+          CODE_SIGN_STYLE=Automatic \
           CODE_SIGN_IDENTITY="Apple Distribution" \
           DEVELOPMENT_TEAM=83VGKGSQUH \
-          PROVISIONING_PROFILE_SPECIFIER="MeerkatWatch App Store" \
           PRODUCT_BUNDLE_IDENTIFIER=com.tokyonasu.meerkatwatch \
           CURRENT_PROJECT_VERSION="${{ env.BUILD_NUM }}" \
           -allowProvisioningUpdates \
@@ -89,10 +77,6 @@ jobs:
 
     - name: Export IPA
       run: |
-        /usr/libexec/PlistBuddy -c "Set :signingStyle manual" export_options.plist
-        /usr/libexec/PlistBuddy -c "Delete :provisioningProfiles" export_options.plist || true
-        /usr/libexec/PlistBuddy -c "Add :provisioningProfiles dict" export_options.plist
-        /usr/libexec/PlistBuddy -c "Add :provisioningProfiles:com.tokyonasu.meerkatwatch string MeerkatWatch App Store" export_options.plist
         xcodebuild -exportArchive \
           -archivePath build/MeerkatWatch.xcarchive \
           -exportPath build/export \
@@ -117,6 +101,9 @@ jobs:
         if grep -Eqi 'UPLOAD FAILED|Validation failed|STATE_ERROR|ERROR:' /tmp/meerkatwatch-altool-upload.log; then
           exit 1
         fi
+
+    - name: Install Python dependencies
+      run: pip3 install --break-system-packages PyJWT cryptography requests
 
     - name: Submit for Review
       run: python3 scripts/submit.py ${{ env.BUILD_NUM }}
