@@ -49,12 +49,12 @@ struct HomeView: View {
                 ScrollView {
                     VStack(spacing: 18) {
                         VStack(spacing: 8) {
-                            Text("ミーアキャット見張り隊")
+                            Text("ミーアキャットの見張り番")
                                 .font(.system(size: 32, weight: .black, design: .rounded))
                                 .foregroundStyle(AppPalette.cocoa)
                                 .multilineTextAlignment(.center)
 
-                            Text("おい、今から見張り任務だぞ。")
+                            Text("スマホを置く時間を、見張り番と一緒に守ろう。")
                                 .font(.headline.weight(.bold))
                                 .foregroundStyle(AppPalette.clay)
                         }
@@ -77,7 +77,7 @@ struct HomeView: View {
                         NavigationLink {
                             TimerView()
                         } label: {
-                            Label("見張り開始", systemImage: "timer")
+                            Label("見張りを始める", systemImage: "timer")
                                 .primaryButtonStyle()
                         }
 
@@ -123,7 +123,7 @@ private struct NewFriendView: View {
         ZStack {
             DesertBackground()
             VStack(spacing: 16) {
-                Text("新しい仲間が来た！")
+                Text("新しい仲間が来ました")
                     .font(.system(size: 30, weight: .black, design: .rounded))
                     .foregroundStyle(AppPalette.cocoa)
                 FriendImageView(friend: friend, size: 170)

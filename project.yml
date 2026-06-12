@@ -34,8 +34,8 @@ targets:
     info:
       path: MeerkatWatch/Info.plist
       properties:
-        CFBundleName: "ミーアキャットの見張り隊"
-        CFBundleDisplayName: "ミーアキャットの見張り隊"
+        CFBundleName: "ミーアキャットの見張り番"
+        CFBundleDisplayName: "ミーアキャットの見張り番"
         CFBundleIconName: AppIcon
         CFBundleShortVersionString: "1.1"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"

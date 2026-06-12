@@ -27,8 +27,8 @@ enum BurrowLevel: Int, CaseIterable, Identifiable, Codable {
         case .smallHole: "小さな穴"
         case .grassBed: "草のベッド"
         case .lookoutTower: "見張り台"
-        case .undergroundRoom: "地下部屋"
-        case .desertBase: "豪華な砂漠基地"
+        case .undergroundRoom: "地下ルーム"
+        case .desertBase: "立派な砂漠基地"
         }
     }
 
@@ -66,11 +66,11 @@ struct MeerkatFriend: Identifiable, Codable, Hashable {
     let imageName: String
 
     static let all: [MeerkatFriend] = [
-        .init(id: "normal", name: "通常ミーア", description: "最初に来る真面目な見張り係。圧は強め。", unlockDay: 1, symbol: "🦫", imageName: "FriendNormal"),
-        .init(id: "child", name: "子どもミーア", description: "小さいけど声は大きい。サボりを見逃さない。", unlockDay: 3, symbol: "🌱", imageName: "FriendChild"),
-        .init(id: "captain", name: "隊長ミーア", description: "砂漠の集中ルールに厳しい隊長。", unlockDay: 7, symbol: "🪖", imageName: "FriendCaptain"),
-        .init(id: "sleepy", name: "眠そうなミーア", description: "眠そうでも見張り精度は高い。", unlockDay: 14, symbol: "💤", imageName: "FriendSleepy"),
-        .init(id: "white", name: "伝説の白ミーア", description: "30日続いた者だけが会える白い見張り番。", unlockDay: 30, symbol: "✨", imageName: "FriendWhite")
+        .init(id: "normal", name: "まじめミーア", description: "最初に来てくれる、正面顔の見張り係。姿勢がいいです。", unlockDay: 1, symbol: "M", imageName: "FriendNormal"),
+        .init(id: "child", name: "こどもミーア", description: "小さいけれど声は大きめ。さぼりを見逃しません。", unlockDay: 3, symbol: "C", imageName: "FriendChild"),
+        .init(id: "captain", name: "隊長ミーア", description: "砂漠の集中ルールに厳しい隊長です。", unlockDay: 7, symbol: "K", imageName: "FriendCaptain"),
+        .init(id: "sleepy", name: "ねむそうミーア", description: "眠そうでも見張り精度は高めです。", unlockDay: 14, symbol: "Z", imageName: "FriendSleepy"),
+        .init(id: "white", name: "伝説の白ミーア", description: "30日続いた人だけが会える白い見張り番です。", unlockDay: 30, symbol: "W", imageName: "FriendWhite")
     ]
 }
 

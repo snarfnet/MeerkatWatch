@@ -15,7 +15,7 @@ struct ResultView: View {
                 MascotView(mood: result.isSuccess ? .happy : .angry)
                     .frame(height: 260)
 
-                Text(result.isSuccess ? "見張り成功！" : "見張り失敗…スマホ触ったな！")
+                Text(result.isSuccess ? "見張り成功" : "見張り失敗")
                     .font(.system(size: 32, weight: .black, design: .rounded))
                     .foregroundStyle(result.isSuccess ? AppPalette.cactus : AppPalette.clay)
                     .multilineTextAlignment(.center)
