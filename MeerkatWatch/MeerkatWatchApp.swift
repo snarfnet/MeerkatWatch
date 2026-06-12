@@ -99,11 +99,11 @@ private struct TrackingPermissionLaunchView: View {
                     .accessibilityHidden(true)
 
                 VStack(spacing: 10) {
-                    Text("広告表示の確認")
+                    Text("広告の確認")
                         .font(.system(size: 30, weight: .black, design: .rounded))
                         .foregroundStyle(AppPalette.cocoa)
 
-                    Text("次に表示される確認で、広告の表示と効果測定に使う許可を選べます。許可しない場合も、アプリはそのまま使えます。")
+                    Text("次に表示される確認で、広告の配信と効果測定に使う許可を選べます。許可しなくてもアプリはそのまま使えます。")
                         .font(.body.weight(.semibold))
                         .foregroundStyle(AppPalette.cocoa.opacity(0.78))
                         .multilineTextAlignment(.center)

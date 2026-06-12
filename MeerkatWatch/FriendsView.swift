@@ -44,8 +44,8 @@ private struct FriendRow: View {
                     if isUnlocked {
                         FriendImageView(friend: friend, size: 58)
                     } else {
-                        Image(systemName: "lock.fill")
-                            .font(.system(size: 26, weight: .black))
+                        Text("？")
+                            .font(.system(size: 34, weight: .black))
                             .foregroundStyle(.white)
                     }
                 }
@@ -61,12 +61,12 @@ private struct FriendRow: View {
                         }
                     }
 
-                    Text(isUnlocked ? friend.description : "\(friend.unlockDay)日目のログインで仲間になります。")
+                    Text(isUnlocked ? friend.description : "\(friend.unlockDay)日目のログインで仲間になる")
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(AppPalette.cocoa.opacity(0.72))
                         .multilineTextAlignment(.leading)
 
-                    Text("解放条件: \(friend.unlockDay)日目")
+                    Text("解放条件：\(friend.unlockDay)日目")
                         .font(.caption.weight(.bold))
                         .foregroundStyle(AppPalette.clay)
                 }

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct TimerView: View {
     @EnvironmentObject private var dataManager: DataManager
+    @Environment(\.dismiss) private var dismiss
     @Environment(\.scenePhase) private var scenePhase
 
     @State private var selectedDuration: TimerDuration = .twentyFive
@@ -18,7 +19,7 @@ struct TimerView: View {
 
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 16) {
-                    Text(isRunning ? "見張り中です" : "集中時間を選んでください")
+                    Text(isRunning ? "周囲を見張り中" : "集中時間を選べ")
                         .font(.system(size: 26, weight: .black, design: .rounded))
                         .foregroundStyle(AppPalette.cocoa)
                         .multilineTextAlignment(.center)
@@ -43,7 +44,7 @@ struct TimerView: View {
                     if !isRunning {
                         durationPicker
                     } else {
-                        Text("見張り番が見ています。\nこの画面から離れないでください。")
+                        Text("おい、今見張り中だぞ！\n画面から離れるな。")
                             .font(.title3.weight(.black))
                             .foregroundStyle(AppPalette.clay)
                             .multilineTextAlignment(.center)

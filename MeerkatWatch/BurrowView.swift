@@ -126,7 +126,7 @@ struct BurrowView: View {
                     .font(.subheadline.weight(.bold))
                     .foregroundStyle(AppPalette.cocoa.opacity(0.72))
             } else {
-                Text("立派な砂漠基地が完成しました。")
+                Text("豪華な砂漠基地が完成したぞ！")
                     .font(.title3.weight(.black))
                     .foregroundStyle(AppPalette.cocoa)
             }

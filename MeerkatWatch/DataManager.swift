@@ -61,16 +61,16 @@ final class DataManager: ObservableObject {
         save()
 
         let messages = [
-            "見張り成功。よく耐えました。",
-            "今日の集中、なかなかやりますね。",
-            "巣穴が少し立派になりました。"
+            "見張り成功！よく耐えた！",
+            "今日の集中、なかなかやるじゃん！",
+            "巣穴が少し立派になったぞ！"
         ]
 
         return FocusResult(
             isSuccess: true,
             minutes: minutes,
             points: earnedPoints,
-            message: messages.randomElement() ?? "見張り成功です。"
+            message: messages.randomElement() ?? "見張り成功！"
         )
     }
 
@@ -80,16 +80,16 @@ final class DataManager: ObservableObject {
         save()
 
         let messages = [
-            "スマホに触ってしまいましたね。",
-            "見張り任務は失敗です。",
-            "まだ砂漠では生き残れません。"
+            "スマホ触ったな！",
+            "見張り任務失敗！",
+            "まだ砂漠では生き残れないぞ！"
         ]
 
         return FocusResult(
             isSuccess: false,
             minutes: minutes,
             points: comfortPoints,
-            message: messages.randomElement() ?? "見張り失敗です。"
+            message: messages.randomElement() ?? "見張り失敗…スマホ触ったな！"
         )
     }
 
