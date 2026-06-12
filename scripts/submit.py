@@ -9,7 +9,7 @@ KEY_ID = os.environ.get('ASC_KEY_ID', 'WDXGY9WX55')
 ISSUER = os.environ.get('ASC_ISSUER_ID', '2be0734f-943a-4d61-9dc9-5d9045c46fec')
 P8_PATH = os.path.expanduser(os.environ.get('ASC_P8_PATH', f'~/.appstoreconnect/private_keys/AuthKey_{KEY_ID}.p8'))
 APP_ID = os.environ.get('APP_ID', '6768575235')
-APP_VERSION = os.environ.get('APP_VERSION', '1.2')
+APP_VERSION = os.environ.get('APP_VERSION', '1.1')
 
 LOCALIZATION = {
     'ja': {

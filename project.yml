@@ -12,7 +12,7 @@ settings:
   base:
     SWIFT_VERSION: 5.9
     TARGETED_DEVICE_FAMILY: "1"
-    MARKETING_VERSION: "1.2"
+    MARKETING_VERSION: "1.1"
     CURRENT_PROJECT_VERSION: 2
     PRODUCT_BUNDLE_IDENTIFIER: com.tokyonasu.meerkatwatch
     DEVELOPMENT_TEAM: 83VGKGSQUH
@@ -37,7 +37,7 @@ targets:
         CFBundleName: "ミーアキャットの見張り番"
         CFBundleDisplayName: "ミーアキャットの見張り番"
         CFBundleIconName: AppIcon
-        CFBundleShortVersionString: "1.2"
+        CFBundleShortVersionString: "1.1"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         LSRequiresIPhoneOS: true
         UILaunchScreen:

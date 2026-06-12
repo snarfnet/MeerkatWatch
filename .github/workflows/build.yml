@@ -122,6 +122,4 @@ jobs:
         fi
 
     - name: Submit for Review
-      env:
-        APP_VERSION: "1.2"
       run: python3 scripts/submit.py ${{ env.BUILD_NUM }}
