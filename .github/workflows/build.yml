@@ -39,20 +39,14 @@ jobs:
     - name: Generate Xcode project
       run: xcodegen generate
 
-    - name: Import Distribution Certificate
+    - name: Prepare signing keychain
       env:
-        CERT_BASE64: ${{ secrets.DIST_CERT_BASE64 }}
-        CERT_PASSWORD: ${{ secrets.DIST_CERT_PASSWORD }}
         KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
       run: |
         security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
         security default-keychain -s build.keychain
         security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
         security set-keychain-settings -t 3600 -u build.keychain
-        echo "$CERT_BASE64" | base64 -D > cert.p12
-        security import cert.p12 -k build.keychain -P "$CERT_PASSWORD" -T /usr/bin/codesign
-        security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" build.keychain
-        rm cert.p12
 
     - name: Set up ASC API Key
       env:
@@ -61,12 +55,21 @@ jobs:
         mkdir -p ~/.appstoreconnect/private_keys
         echo "$ASC_API_KEY_CONTENT" | base64 -D > ~/.appstoreconnect/private_keys/AuthKey_WDXGY9WX55.p8
 
+    - name: Create CI distribution certificate
+      env:
+        ASC_KEY_ID: WDXGY9WX55
+        ASC_ISSUER_ID: 2be0734f-943a-4d61-9dc9-5d9045c46fec
+        BUILD_KEYCHAIN: build.keychain
+        KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+      run: python3 scripts/create_distribution_certificate.py
+
     - name: Prepare App Store provisioning profile
       env:
         ASC_KEY_ID: WDXGY9WX55
         ASC_ISSUER_ID: 2be0734f-943a-4d61-9dc9-5d9045c46fec
         APP_BUNDLE_ID: com.tokyonasu.meerkatwatch
         PROFILE_NAME: "MeerkatWatch App Store"
+        REFRESH_PROFILE: "true"
       run: python3 scripts/prepare_app_store_profile.py
 
     - name: Build Archive

@@ -13,6 +13,7 @@ ISSUER = os.environ.get("ASC_ISSUER_ID", "2be0734f-943a-4d61-9dc9-5d9045c46fec")
 P8_PATH = Path(os.environ.get("ASC_P8_PATH", f"~/.appstoreconnect/private_keys/AuthKey_{KEY_ID}.p8")).expanduser()
 BUNDLE_ID = os.environ.get("APP_BUNDLE_ID", "com.tokyonasu.meerkatwatch")
 PROFILE_NAME = os.environ.get("PROFILE_NAME", "MeerkatWatch App Store")
+REFRESH_PROFILE = os.environ.get("REFRESH_PROFILE", "").lower() in {"1", "true", "yes"}
 
 
 def make_token():
@@ -54,6 +55,11 @@ if not certs:
 
 profiles = api("GET", f"/profiles?filter[name]={PROFILE_NAME}&limit=20").get("data", [])
 active_profiles = [profile for profile in profiles if profile.get("attributes", {}).get("profileState") == "ACTIVE"]
+
+if REFRESH_PROFILE:
+    for profile in active_profiles:
+        api("DELETE", f"/profiles/{profile['id']}")
+    active_profiles = []
 
 if active_profiles:
     profile = active_profiles[0]
