@@ -47,13 +47,9 @@ def first_data(response, label):
 bundle = first_data(api("GET", f"/bundleIds?filter[identifier]={BUNDLE_ID}&limit=1"), "bundle ID")
 bundle_id = bundle["id"]
 
-seen_cert_ids = set()
-certs = []
-for cert_type in ("IOS_DISTRIBUTION", "DISTRIBUTION"):
-    for cert in api("GET", f"/certificates?filter[certificateType]={cert_type}&limit=200").get("data", []):
-        if cert["id"] not in seen_cert_ids:
-            seen_cert_ids.add(cert["id"])
-            certs.append(cert)
+certs = api("GET", "/certificates?filter[certificateType]=IOS_DISTRIBUTION&limit=200").get("data", [])
+if not certs:
+    certs = api("GET", "/certificates?filter[certificateType]=DISTRIBUTION&limit=200").get("data", [])
 if not certs:
     raise RuntimeError("No distribution certificates found in App Store Connect")
 
