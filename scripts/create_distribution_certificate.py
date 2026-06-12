@@ -133,45 +133,26 @@ def delete_stale_or_oldest_certificate():
     return False
 
 
-def create_certificate_once(certificate_type):
+def create_certificate():
     csr = CSR_PATH.read_text()
     payload = {
         "data": {
             "type": "certificates",
             "attributes": {
-                "certificateType": certificate_type,
+                "certificateType": "DISTRIBUTION",
                 "csrContent": csr,
             },
         }
     }
-    return api_json("POST", "/certificates", payload)["data"]
-
-
-def create_certificate():
-    last_error = None
-    for certificate_type in ("DISTRIBUTION", "IOS_DISTRIBUTION"):
-        try:
-            return create_certificate_once(certificate_type)
-        except RuntimeError as error:
-            last_error = error
-            print(f"Certificate create failed for {certificate_type}: {error}")
-    if last_error is None:
-        raise RuntimeError("Certificate creation failed")
     try:
-        raise last_error
+        return api_json("POST", "/certificates", payload)["data"]
     except RuntimeError as error:
         text = str(error).lower()
         if not any(word in text for word in ("maximum", "limit", "reached", "already have")):
             raise
         if not delete_stale_or_oldest_certificate():
             raise
-    for certificate_type in ("DISTRIBUTION", "IOS_DISTRIBUTION"):
-        try:
-            return create_certificate_once(certificate_type)
-        except RuntimeError as error:
-            last_error = error
-            print(f"Certificate retry failed for {certificate_type}: {error}")
-    raise last_error
+        return api_json("POST", "/certificates", payload)["data"]
 
 
 def import_certificate(cert):
