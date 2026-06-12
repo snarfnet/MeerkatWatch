@@ -35,12 +35,10 @@ def api(method, path, payload=None):
 
 
 def first_data(response, label):
-    data = response.get("data")
-    if not data:
+    items = response.get("data", [])
+    if not items:
         raise RuntimeError(f"No {label} found")
-    if isinstance(data, list):
-        return data[0]
-    return data
+    return items[0]
 
 
 bundle = first_data(api("GET", f"/bundleIds?filter[identifier]={BUNDLE_ID}&limit=1"), "bundle ID")
