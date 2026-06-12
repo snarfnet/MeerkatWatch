@@ -5,7 +5,7 @@ KEY_ID  = 'WDXGY9WX55'
 ISSUER  = '2be0734f-943a-4d61-9dc9-5d9045c46fec'
 P8_PATH = os.path.expanduser('~/.appstoreconnect/private_keys/AuthKey_WDXGY9WX55.p8')
 APP_ID  = '6768575235'
-APP_VERSION = os.environ.get('APP_VERSION', '1.1')
+APP_VERSION = os.environ.get('APP_VERSION', '1.2')
 LOCALIZATION = {
     'ja': {
         'description': (
