@@ -57,7 +57,7 @@ profiles = api("GET", f"/profiles?filter[name]={PROFILE_NAME}&limit=20").get("da
 active_profiles = [profile for profile in profiles if profile.get("attributes", {}).get("profileState") == "ACTIVE"]
 
 if REFRESH_PROFILE:
-    for profile in profiles:
+    for profile in active_profiles:
         api("DELETE", f"/profiles/{profile['id']}")
     active_profiles = []
 
